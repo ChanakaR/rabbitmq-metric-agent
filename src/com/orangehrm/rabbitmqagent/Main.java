@@ -1,4 +1,4 @@
-package com.orangehrm.rabbitmq;
+package com.orangehrm.rabbitmqagent;
 
 import com.newrelic.metrics.publish.Runner;
 

@@ -1,11 +1,8 @@
 {
   "agents": [
     {
-      "name" : "com.orangehrm.rabbitmq",
-      "host" : "https://infinity-rabbitmq.orangehrm.com",
-      "version" : "1.0.0",
-      "username" : "orangehrm",
-      "password" : "0FokLE%ypwo47S7u"
+      "name" : "OrangeHRM - RabbitMQ Watcher",
+      "host" : "https://infinity-rabbitmq.orangehrm.com"
     }
   ]
 }

@@ -1,4 +1,4 @@
-package com.orangehrm.rabbitmq;
+package com.orangehrm.rabbitmqagent;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
