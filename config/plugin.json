@@ -1,0 +1,11 @@
+{
+  "agents": [
+    {
+      "name" : "rabbitMQAgent",
+      "host" : "host1.com",
+      "version" : "1.0.0",
+      "username" : "orangehrm",
+      "password" : "0FokLE%ypwo47S7u"
+    }
+  ]
+}
