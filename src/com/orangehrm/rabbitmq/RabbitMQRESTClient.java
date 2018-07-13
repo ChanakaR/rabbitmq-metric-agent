@@ -10,36 +10,40 @@ import java.net.URL;
 import java.util.Objects;
 
 public class RabbitMQRESTClient {
-    private static final String RABBITMQ_API_URL = "https://infinity-rabbitmq.orangehrm.com/api/";
-    private static final String RABBITMQ_USERNAME = "orangehrm";
-    private static final String RABBITMQ_PASSWORD = "0FokLE%ypwo47S7u";
+
+    private String rabbitMQApiURL = null;
 
     private HttpsURLConnection connection = null;
 
-    public RabbitMQRESTClient() throws IOException {
-        this.setCredentials();
+    public RabbitMQRESTClient(String host, String username, String password){
+        this.setCredentials(username, password);
+        this.rabbitMQApiURL = host.concat("/api/");
     }
 
-    public String callAPIEndPoint(String endPoint) throws IOException {
-        this.setConnection(endPoint);
-        if(this.getResponseCode() == 200){
-            return this.getResponseContent();
+    public String callAPIEndPoint(String endPoint) {
+        try{
+            this.setConnection(endPoint);
+            if(this.getResponseCode() == 200){
+                return this.getResponseContent();
+            }
+        }catch (IOException e){
+            System.out.println(e.getMessage());
         }
         return  null;
     }
 
-    private void setCredentials(){
+    private void setCredentials(String username, String password){
         Authenticator.setDefault (new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication (RABBITMQ_USERNAME, RABBITMQ_PASSWORD.toCharArray());
+                return new PasswordAuthentication (username, password.toCharArray());
             }
         });
     }
 
     private void setConnection(String endPoint) throws IOException {
-        String api_url = RABBITMQ_API_URL;
+        String api_url = rabbitMQApiURL;
         if(endPoint != null && !Objects.equals(endPoint, "")){
-            api_url = RABBITMQ_API_URL.concat(endPoint);
+            api_url = rabbitMQApiURL.concat(endPoint);
         }
         URL url = new URL(api_url);
         this.connection = (HttpsURLConnection) url.openConnection();

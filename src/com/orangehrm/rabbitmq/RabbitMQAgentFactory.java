@@ -11,6 +11,9 @@ public class RabbitMQAgentFactory extends AgentFactory {
     public Agent createConfiguredAgent(Map<String, Object> map){
         String name = (String) map.get("name");
         String version = (String) map.get("version");
-        return new RabbitMQAgent(name,version);
+        String host = (String) map.get("host");
+        String username = (String) map.get("username");
+        String password = (String) map.get("password");
+        return new RabbitMQAgent(name,version,host,username,password);
     }
 }

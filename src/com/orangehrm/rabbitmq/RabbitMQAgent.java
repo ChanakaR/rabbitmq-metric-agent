@@ -7,13 +7,14 @@ import com.newrelic.metrics.publish.processors.Processor;
 public class RabbitMQAgent extends Agent{
 
     private static final String GUID = "com.orangehrm.rabbitmq";
-    private static final String VERSION = "1.0.0";
 
     private String name;
     private Processor memoryUsageProcessor = new EpochProcessor();
+    private RabbitMQRESTClient rabbitMQRESTClient;
 
-    public RabbitMQAgent(String GUID, String version) {
-        super(GUID,VERSION);
+    public RabbitMQAgent(String GUID, String version,String host, String username, String password) {
+        super(GUID,version);
+        this.rabbitMQRESTClient = new RabbitMQRESTClient(host,username,password);
         this.name = name;
     }
 
