@@ -3,14 +3,11 @@ package com.orangehrm.rabbitmqagent;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.processors.EpochProcessor;
 import com.newrelic.metrics.publish.processors.Processor;
+import com.newrelic.metrics.publish.util.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Logger;
 
 public class RabbitMQAgent extends Agent{
 
@@ -24,6 +21,7 @@ public class RabbitMQAgent extends Agent{
     private Processor messageDeliverRateProcessor = new EpochProcessor();
     private Processor messagePublishRateProcessor = new EpochProcessor();
     private JSONParser jsonParser = new JSONParser();
+    private static final Logger logger = Logger.getLogger(RabbitMQAgent.class);
 
     public RabbitMQAgent(String name,String host,String username, String password){
         super(GUID, VERSION);
@@ -37,7 +35,7 @@ public class RabbitMQAgent extends Agent{
             this.setUpOverallMetrics();
             this.setUpNodeSpecificMetrics();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e,"error!");
         }
 
     }
