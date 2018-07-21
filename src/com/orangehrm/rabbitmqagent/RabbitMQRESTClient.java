@@ -23,16 +23,12 @@ public class RabbitMQRESTClient {
         this.rabbitMQApiURL = host.concat("/api/");
     }
 
-    public String callAPIEndPoint(String endPoint) {
-        try{
-            this.setConnection(endPoint);
-            if(this.getResponseCode() == 200){
-                return this.getResponseContent();
-            }
-        }catch (IOException e){
-            System.out.println(e.getMessage());
+    public String callAPIEndPoint(String endPoint) throws IOException {
+        this.setConnection(endPoint);
+        if(this.getResponseCode() == 200){
+            return this.getResponseContent();
         }
-        return  null;
+        return null;
     }
 
     private void setCredentials(String username, String password){

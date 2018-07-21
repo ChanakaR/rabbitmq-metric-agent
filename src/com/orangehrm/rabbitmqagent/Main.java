@@ -1,20 +1,17 @@
 package com.orangehrm.rabbitmqagent;
 
 import com.newrelic.metrics.publish.Runner;
-import org.json.simple.parser.ParseException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.newrelic.metrics.publish.util.Logger;
 
 public class Main {
+    private static final Logger logger = Logger.getLogger(RabbitMQAgent.class);
     public static void main(String[] args) {
         try{
             Runner runner = new Runner();
             runner.add(new RabbitMQAgentFactory());
             runner.setupAndRun();
         }catch (Exception e){
-            System.err.println("ERROR: " + e.getMessage());
+            logger.error(e,"error!");
             System.exit(-1);
         }
     }

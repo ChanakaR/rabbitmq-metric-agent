@@ -1,6 +1,7 @@
 package com.orangehrm.rabbitmqagent;
 
 import com.newrelic.metrics.publish.Agent;
+import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import com.newrelic.metrics.publish.processors.EpochProcessor;
 import com.newrelic.metrics.publish.processors.Processor;
 import com.newrelic.metrics.publish.util.Logger;
@@ -8,6 +9,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 
 public class RabbitMQAgent extends Agent{
 
@@ -34,8 +37,10 @@ public class RabbitMQAgent extends Agent{
         try {
             this.setUpOverallMetrics();
             this.setUpNodeSpecificMetrics();
-        } catch (Exception e) {
-            logger.error(e,"error!");
+        } catch (ParseException parseException) {
+            logger.error(parseException,"JSON parse error!");
+        } catch (IOException ioException){
+            logger.error(ioException,"RabbitMQ node connection error!");
         }
 
     }
@@ -58,7 +63,7 @@ public class RabbitMQAgent extends Agent{
      *
      */
 
-    private void setUpOverallMetrics() throws ParseException {
+    private void setUpOverallMetrics() throws ParseException, IOException {
 
         String result = this.rabbitRESTClient.callAPIEndPoint("overview");
         JSONObject resultJSONObjects = (JSONObject) jsonParser.parse(result);
@@ -120,7 +125,7 @@ public class RabbitMQAgent extends Agent{
      * - [NodeName]/TotalMemory/Megabytes : Mb
      * - [NodeName]/NodeStatus : status
      */
-    private void setUpNodeSpecificMetrics(){
+    private void setUpNodeSpecificMetrics() throws IOException{
         try {
             String result = this.rabbitRESTClient.callAPIEndPoint("nodes");
             Object resultJSONObjects =  jsonParser.parse(result);
