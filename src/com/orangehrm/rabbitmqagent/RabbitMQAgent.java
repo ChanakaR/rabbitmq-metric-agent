@@ -1,7 +1,6 @@
 package com.orangehrm.rabbitmqagent;
 
 import com.newrelic.metrics.publish.Agent;
-import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import com.newrelic.metrics.publish.processors.EpochProcessor;
 import com.newrelic.metrics.publish.processors.Processor;
 import com.newrelic.metrics.publish.util.Logger;
@@ -14,7 +13,7 @@ import java.io.IOException;
 
 public class RabbitMQAgent extends Agent{
 
-    private static final String GUID = "com.orangehrm.Rabbi";
+    private static final String GUID = "com.orangehrm.OHRMRabbitMQ";
     private static final String VERSION = "1.0.0";
 
     private String name;
@@ -39,8 +38,10 @@ public class RabbitMQAgent extends Agent{
             this.setUpNodeSpecificMetrics();
         } catch (ParseException parseException) {
             logger.error(parseException,"JSON parse error!");
+            System.exit(-1);
         } catch (IOException ioException){
             logger.error(ioException,"RabbitMQ node connection error!");
+            System.exit(-1);
         }
 
     }
@@ -69,31 +70,24 @@ public class RabbitMQAgent extends Agent{
         JSONObject resultJSONObjects = (JSONObject) jsonParser.parse(result);
         JSONObject queuesTotal = (JSONObject) resultJSONObjects.get("queue_totals");
 
-        System.out.println("TOTAL MESSAGES : " + queuesTotal.get("messages"));
         reportMetric("MessagesTotal/Count", "messages", (long) queuesTotal.get("messages"));
-
-        System.out.println("MESSAGES READY : " + queuesTotal.get("messages_ready"));
         reportMetric("MessagesReady/Count", "messages", (long) queuesTotal.get("messages_ready"));
-
-        System.out.println("MESSAGES UNACK : " + queuesTotal.get("messages_unacknowledged"));
         reportMetric("MessagesUnAcknowledge/Count", "messages", (long) queuesTotal.get("messages_unacknowledged"));
-
 
         JSONObject messageStats = (JSONObject) resultJSONObjects.get("message_stats");
 
-        System.out.println("MESSAGES TOTAL DELIVERED : " + messageStats.get("deliver_get"));
-        long deliveredMessageCount = (long) messageStats.get("deliver_get");
         if(messageStats.get("deliver_get") != null){
+            long deliveredMessageCount = (long) messageStats.get("deliver_get");
             Object deliverRate = messageDeliverRateProcessor.process(deliveredMessageCount);
             if(deliverRate != null){
                 reportMetric("MessagesDelivered/Rate", "messages/sec", (float) deliverRate);
             }else{
                 reportMetric("MessagesDelivered/Rate", "messages/sec", 0);
             }
+        }else{
+            reportMetric("MessagesDelivered/Rate", "messages/sec", 0);
         }
 
-
-        System.out.println("MESSAGES TOTAL RETURNED UNROUTABLE : " + messageStats.get("return_unroutable"));
         if( messageStats.get("return_unroutable") != null){
             reportMetric("MessagesReturnedUnroutable/Count", "messages", (long) messageStats.get("return_unroutable"));
         }else {
@@ -106,16 +100,16 @@ public class RabbitMQAgent extends Agent{
             reportMetric("MessagesRedelivered/Count", "messages", 0);
         }
 
-        System.out.println("MESSAGES PUBLISHED : " + messageStats.get("publish"));
-        long publishedMessageCount = (long) messageStats.get("publish");
         if(messageStats.get("publish") != null){
+            long publishedMessageCount = (long) messageStats.get("publish");
             Object publishedRate = messagePublishRateProcessor.process(publishedMessageCount);
             if(publishedRate != null){
                 reportMetric("MessagesPublished/Rate", "messages/sec", (float) publishedRate);
             }else{
                 reportMetric("MessagesPublished/Rate", "messages/sec", 0);
             }
-
+        }else{
+            reportMetric("MessagesPublished/Rate", "messages/sec", 0);
         }
 
     }
@@ -136,11 +130,9 @@ public class RabbitMQAgent extends Agent{
                 long mem_used = (long) nodeJSONObject.get("mem_used");
                 float percentage = (mem_used * 100.0f) / mem_limit;
 
-                System.out.println("Node/MemoryUsage/"+nodeJSONObject.get("name")+" : " + percentage);
                 reportMetric(nodeJSONObject.get("name")+"/MemoryUsage/Percentage", "percentage", percentage);
 
-                System.out.println("Node/TotalMemory/"+nodeJSONObject.get("name")+" : " + ((long)nodeJSONObject.get("mem_used") / 1024));
-                reportMetric(nodeJSONObject.get("name")+"/TotalMemory/Megabytes", "Mb", ((long)nodeJSONObject.get("mem_used") / 1024));
+                reportMetric(nodeJSONObject.get("name")+"/TotalMemory/Megabytes", "Mb", ((long)nodeJSONObject.get("mem_used") / (1024*1024)));
 
                 int running;
                 boolean isRunning = (boolean)nodeJSONObject.get("running");
@@ -149,7 +141,6 @@ public class RabbitMQAgent extends Agent{
                 }else {
                     running = 0;
                 }
-                System.out.println("Node/Running/"+nodeJSONObject.get("name")+nodeJSONObject.get("name")+" : " + running);
                 reportMetric(nodeJSONObject.get("name") + "/NodeStatus","status", running);
             }
         } catch (ParseException e) {
