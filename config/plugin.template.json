@@ -1,0 +1,10 @@
+{
+  "agents": [
+    {
+      "name" : "Name to display in new relic dashboard",
+      "host" : "RabbitMQ Host",
+      "username" : "ADMIN_USERNAME",
+      "password" : "ADMIN_PASSWORD"
+    }
+  ]
+}
