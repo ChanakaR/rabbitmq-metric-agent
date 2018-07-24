@@ -76,10 +76,13 @@ public class RabbitMQRESTClient {
     }
 
 
-    // ========================================== //
-    // ---- REMOVE THE BELOW CODE WHEN DEPLOY ----//
-    // ========================================== //
+    // ============================================================= //
+    // ---- IF YOU USE LOCALHOST UN-TRUSTED RABBITMQ AGENT      ---- //
+    // ---- THEN UNCOMMENT FOLLOWING CODE BEFORE RUN THE PLUGIN ---- //
+    // ============================================================= //
 
+
+    /**
     static {
         disableSslVerification();
     }
@@ -117,4 +120,5 @@ public class RabbitMQRESTClient {
             e.printStackTrace();
         }
     }
+     **/
 }

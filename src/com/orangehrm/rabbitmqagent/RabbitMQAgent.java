@@ -76,12 +76,10 @@ public class RabbitMQAgent extends Agent{
 
         JSONObject messageStats = (JSONObject) resultJSONObjects.get("message_stats");
 
-        System.out.println("DELIVERED " + messageStats.get("deliver_get"));
         if(messageStats.get("deliver_get") != null){
             long deliveredMessageCount = (long) messageStats.get("deliver_get");
             Object deliverRate = messageDeliverRateProcessor.process(deliveredMessageCount);
             if(deliverRate != null){
-                System.out.println("DELIVER RATE"+deliverRate);
                 reportMetric("MessagesDelivered/Rate", "messages/sec", (float) deliverRate);
             }else{
                 reportMetric("MessagesDelivered/Rate", "messages/sec", 0);
@@ -102,12 +100,10 @@ public class RabbitMQAgent extends Agent{
             reportMetric("MessagesRedelivered/Count", "messages", 0);
         }
 
-        System.out.println("PUBLISHED " + messageStats.get("publish"));
         if(messageStats.get("publish") != null){
             long publishedMessageCount = (long) messageStats.get("publish");
             Object publishedRate = messagePublishRateProcessor.process(publishedMessageCount);
             if(publishedRate != null){
-                System.out.println("PUBLISHED IN RATE"+publishedRate);
                 reportMetric("MessagesPublished/Rate", "messages/sec", (float) publishedRate);
             }else{
                 reportMetric("MessagesPublished/Rate", "messages/sec", 0);
