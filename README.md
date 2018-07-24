@@ -43,6 +43,6 @@ Createa a file called newrelic.json under config directory
 ```
 
 ## How to setup
-Create a jar (using ant) and run jar using command `java -jar JAR_FILE.jar`. Make sure config directory and jar file are in the same directory.
+Create a jar and run jar using command `java -jar JAR_FILE.jar`. Make sure config directory and jar file are in the same directory.
 
 Please go through our [wiki page](https://github.com/ChanakaR/rabbitmq-metric-agent/wiki) for more instructions.
