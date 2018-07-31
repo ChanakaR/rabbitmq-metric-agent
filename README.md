@@ -32,7 +32,7 @@ Create a file called plugin.json under config directory
 }
 ```
 ### 2. newrelic.json
-Createa a file called newrelic.json under config directory
+Create a file called newrelic.json under config directory
 ```
 {
   "license_key": "YOUR_LICENSE_KEY_HERE",
